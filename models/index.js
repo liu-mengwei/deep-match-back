@@ -1,12 +1,14 @@
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 import { Sequelize, DataTypes } from 'sequelize';
 import config from '../config/index.js';
 import dbConfig from '../config/database.js';
 
 // 获取__dirname等价物（ES模块中没有直接的__dirname）  
 const __filename = fileURLToPath(import.meta.url);
+console.log(__filename, '__filename')
+
 const __dirname = path.dirname(__filename);
 
 const env = config.env;
@@ -32,7 +34,11 @@ const sequelize = new Sequelize(
 const importModel = async (file) => {
   if (file !== path.basename(__filename) && file.endsWith('.js')) {
     const modelPath = path.join(__dirname, file);
-    const modelModule = await import(modelPath);
+
+    const modelPathUrl = pathToFileURL(modelPath).href;
+
+    const modelModule = await import(modelPathUrl);
+
     const model = modelModule.default(sequelize, DataTypes);
     db[model.name] = model;
   }

@@ -26,7 +26,12 @@ export default (sequelize, DataTypes) => {
     is_verified: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
-    }
+    },
+    gender: {
+      type: DataTypes.ENUM('male', 'female'),
+      allowNull: false,
+      comment: '用户性别'
+    },
   }, {
     tableName: 'users',
     timestamps: true,

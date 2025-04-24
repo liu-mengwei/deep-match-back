@@ -2,8 +2,8 @@ import authService from '../services/auth.js';
 
 // 用户注册  
 export const register = async (ctx) => {
-  const { phone, password, verification_code } = ctx.request.body;
-  const result = await authService.register(phone, password, verification_code);
+  const { phone, password, verification_code, gender } = ctx.request.body;
+  const result = await authService.register(phone, password, verification_code, gender);
 
   ctx.status = 201;
   ctx.body = {

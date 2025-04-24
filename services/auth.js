@@ -8,7 +8,7 @@ const { User, UserProfile, VerificationCode, sequelize } = db;
 
 class AuthService {
   // 注册用户  
-  async register(phone, password, verificationCode) {
+  async register(phone, password, verificationCode, gender) {
     const transaction = await sequelize.transaction();
 
     try {
@@ -26,7 +26,8 @@ class AuthService {
       const user = await User.create({
         phone,
         password_hash: passwordHash,
-        is_verified: true
+        is_verified: true,
+        gender
       }, { transaction });
 
       // 标记验证码为已使用  

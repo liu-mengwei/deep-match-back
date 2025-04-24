@@ -9,13 +9,17 @@ const codeSchema = Joi.string().length(6).pattern(/^\d+$/).required();
 // 密码验证  
 const passwordSchema = Joi.string().min(6).max(30).required();
 
+// 性别校验
+const genderSchema = Joi.string().valid('male', 'female').required();
+
 // 校验规则对象  
 const schemas = {
   // 注册验证  
   registerSchema: Joi.object({
     phone: phoneSchema,
     password: passwordSchema,
-    verification_code: codeSchema
+    verification_code: codeSchema,
+    gender: genderSchema
   }),
 
   // 密码登录验证  
