@@ -163,6 +163,7 @@ class AuthService {
 
     return {
       message: '验证码已发送',
+      code,
       expires_in: config.verificationCode.expireSeconds
     };
   }

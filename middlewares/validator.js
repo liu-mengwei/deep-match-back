@@ -32,8 +32,8 @@ export const validate = (schema) => {
 
       await next();
     } catch (err) {
-      ctx.status = 400;
-      ctx.body = { error: '请求数据验证失败' };
+      ctx.status = err.status || 400;
+      ctx.body = { error: '请求数据验证失败', message: err.message || '' };
     }
   };
 };  
