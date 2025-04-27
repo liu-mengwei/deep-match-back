@@ -5,42 +5,51 @@ export default (sequelize, DataTypes) => {
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true
     },
-    user_id: {
+    userId: {
       type: DataTypes.UUID,
       allowNull: false,
-      unique: true
+      unique: true,
+      field: 'user_id'
     },
     nickname: {
       type: DataTypes.STRING(50),
-      allowNull: true
+      allowNull: true,
+      field: 'nickname'
     },
     avatar: {
       type: DataTypes.STRING(255),
-      allowNull: true
+      allowNull: true,
+      field: 'avatar'
     },
     gender: {
       type: DataTypes.STRING(10),
-      allowNull: true
+      allowNull: true,
+      field: 'gender'
     },
     birthday: {
       type: DataTypes.DATEONLY,
-      allowNull: true
+      allowNull: true,
+      field: 'birthday'
     },
     location: {
       type: DataTypes.STRING(100),
-      allowNull: true
+      allowNull: true,
+      field: 'location'
     },
     bio: {
       type: DataTypes.TEXT,
-      allowNull: true
+      allowNull: true,
+      field: 'bio'
     },
     preferences: {
       type: DataTypes.JSONB,
-      allowNull: true
+      allowNull: true,
+      field: 'preferences'
     },
-    last_active: {
+    lastActive: {
       type: DataTypes.DATE,
-      allowNull: true
+      allowNull: true,
+      field: 'last_active'
     }
   }, {
     tableName: 'user_profiles',
@@ -52,10 +61,10 @@ export default (sequelize, DataTypes) => {
 
   UserProfile.associate = (models) => {
     UserProfile.belongsTo(models.User, {
-      foreignKey: 'user_id',
+      foreignKey: 'userId',
       as: 'user'
     });
   };
 
   return UserProfile;
-};  
+};

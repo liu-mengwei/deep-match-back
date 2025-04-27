@@ -32,7 +32,7 @@ export const authenticate = async (ctx, next) => {
       return;
     }
 
-    if (!user.is_active) {
+    if (!user.isActive) {
       ctx.status = 403;
       ctx.body = { error: '用户已被禁用' };
       return;
@@ -45,4 +45,4 @@ export const authenticate = async (ctx, next) => {
     ctx.status = 401;
     ctx.body = { error: '认证失败' };
   }
-};  
+};

@@ -15,29 +15,40 @@ export default (sequelize, DataTypes) => {
       allowNull: true,
       unique: true
     },
-    password_hash: {
+    passwordHash: {
       type: DataTypes.STRING(128),
-      allowNull: false
+      allowNull: false,
+      field: 'password_hash'
     },
-    is_active: {
+    isActive: {
       type: DataTypes.BOOLEAN,
-      defaultValue: true
+      defaultValue: true,
+      field: 'is_active'
     },
-    is_verified: {
+    isVerified: {
       type: DataTypes.BOOLEAN,
-      defaultValue: false
+      defaultValue: false,
+      field: 'is_verified'
     },
     gender: {
       type: DataTypes.ENUM('male', 'female'),
       allowNull: false,
       comment: '用户性别'
     },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      field: 'created_at'
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      field: 'updated_at'
+    }
   }, {
     tableName: 'users',
     timestamps: true,
-    underscored: true,
-    createdAt: 'created_at',
-    updatedAt: 'updated_at'
+    underscored: true
   });
 
   User.associate = (models) => {
@@ -48,4 +59,4 @@ export default (sequelize, DataTypes) => {
   };
 
   return User;
-};  
+};

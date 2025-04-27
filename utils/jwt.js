@@ -32,6 +32,8 @@ export const generateToken = (userId) => {
 
 // 验证JWT令牌  
 export const verifyToken = (token) => {
+  const jwtSecret = config.jwt.secret;
+
   try {
     // 使用相同的密钥验证令牌  
     const decoded = jwt.verify(token, jwtSecret);

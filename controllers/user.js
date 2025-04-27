@@ -11,9 +11,9 @@ export const getCurrentUser = async (ctx) => {
 // 更新用户密码  
 export const updatePassword = async (ctx) => {
   const userId = ctx.state.user.id;
-  const { current_password, new_password } = ctx.request.body;
+  const { currentPassword, newPassword } = ctx.request.body;
 
-  const result = await userService.updatePassword(userId, current_password, new_password);
+  const result = await userService.updatePassword(userId, currentPassword, newPassword);
 
   ctx.body = result;
-};  
+};

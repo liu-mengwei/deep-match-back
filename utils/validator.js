@@ -18,7 +18,7 @@ const schemas = {
   registerSchema: Joi.object({
     phone: phoneSchema,
     password: passwordSchema,
-    verification_code: codeSchema,
+    verificationCode: codeSchema, // 修改为驼峰命名
     gender: genderSchema
   }),
 
@@ -31,20 +31,20 @@ const schemas = {
   // 验证码登录验证  
   codeLoginSchema: Joi.object({
     phone: phoneSchema,
-    verification_code: codeSchema
+    verificationCode: codeSchema // 修改为驼峰命名
   }),
 
   // 发送验证码验证  
   sendCodeSchema: Joi.object({
     phone: phoneSchema,
-    type: Joi.string().valid('register', 'login', 'reset_password').required()
+    type: Joi.string().valid('register', 'login', 'resetPassword').required() // 修改为驼峰命名
   }),
 
   // 重置密码验证  
   resetPasswordSchema: Joi.object({
     phone: phoneSchema,
-    verification_code: codeSchema,
-    new_password: passwordSchema
+    verificationCode: codeSchema, // 修改为驼峰命名
+    newPassword: passwordSchema // 修改为驼峰命名
   }),
 
   // 用户资料更新验证  
@@ -57,4 +57,4 @@ const schemas = {
   })
 };
 
-export default schemas;  
+export default schemas;

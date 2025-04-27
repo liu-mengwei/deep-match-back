@@ -25,14 +25,14 @@ class AuthService {
       const passwordHash = await hashPassword(password);
       const user = await User.create({
         phone,
-        password_hash: passwordHash,
-        is_verified: true,
+        passwordHash: passwordHash,
+        isVerified: true,
         gender
       }, { transaction });
 
       // 标记验证码为已使用  
       await VerificationCode.update(
-        { is_used: true },
+        { isUsed: true },
         { where: { id: verification.id }, transaction }
       );
 
@@ -57,13 +57,13 @@ class AuthService {
     }
 
     // 验证密码  
-    const isPasswordValid = await verifyPassword(password, user.password_hash);
+    const isPasswordValid = await verifyPassword(password, user.passwordHash);
     if (!isPasswordValid) {
       throw { status: 401, message: '手机号或密码错误' };
     }
 
     // 检查用户状态  
-    if (!user.is_active) {
+    if (!user.isActive) {
       throw { status: 403, message: '账户已被禁用' };
     }
 
@@ -88,13 +88,13 @@ class AuthService {
       const verification = await this._verifyCode(phone, verificationCode, 'login');
 
       // 检查用户状态  
-      if (!user.is_active) {
+      if (!user.isActive) {
         throw { status: 403, message: '账户已被禁用' };
       }
 
       // 标记验证码为已使用  
       await VerificationCode.update(
-        { is_used: true },
+        { isUsed: true },
         { where: { id: verification.id }, transaction }
       );
 
@@ -130,12 +130,12 @@ class AuthService {
     // 检查冷却期（1分钟内不能重复发送）  
     const lastCode = await VerificationCode.findOne({
       where: { phone, type },
-      order: [['created_at', 'DESC']]
+      order: [['createdAt', 'DESC']]
     });
 
     if (lastCode) {
       const now = new Date();
-      const createdAt = new Date(lastCode.created_at);
+      const createdAt = new Date(lastCode.createdAt);
       const diffSeconds = Math.floor((now - createdAt) / 1000);
 
       if (diffSeconds < 60) {
@@ -155,7 +155,8 @@ class AuthService {
       phone,
       code,
       type,
-      expires_at: expiresAt
+      expiresAt: expiresAt,
+      isUsed: false
     });
 
     // 发送短信验证码  
@@ -185,13 +186,13 @@ class AuthService {
       // 更新密码  
       const passwordHash = await hashPassword(newPassword);
       await User.update(
-        { password_hash: passwordHash },
+        { passwordHash: passwordHash },
         { where: { id: user.id }, transaction }
       );
 
       // 标记验证码为已使用  
       await VerificationCode.update(
-        { is_used: true },
+        { isUsed: true },
         { where: { id: verification.id }, transaction }
       );
 
@@ -212,9 +213,9 @@ class AuthService {
         phone,
         code,
         type,
-        is_used: false
+        isUsed: false
       },
-      order: [['created_at', 'DESC']]
+      order: [['createdAt', 'DESC']]
     });
 
     if (!verification) {
@@ -222,7 +223,7 @@ class AuthService {
     }
 
     // 检查是否过期  
-    if (new Date() > new Date(verification.expires_at)) {
+    if (new Date() > new Date(verification.expiresAt)) {
       throw { status: 400, message: '验证码已过期' };
     }
 
@@ -230,4 +231,4 @@ class AuthService {
   }
 }
 
-export default new AuthService();  
+export default new AuthService();
