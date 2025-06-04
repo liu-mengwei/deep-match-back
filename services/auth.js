@@ -119,7 +119,7 @@ class AuthService {
       if (existingUser) {
         throw { status: 400, message: '该手机号已被注册' };
       }
-    } else if (['login', 'reset_password'].includes(type)) {
+    } else if (['login', 'resetPassword'].includes(type)) {
       // 登录和重置密码场景：检查用户是否存在  
       const user = await User.findOne({ where: { phone } });
       if (!user) {
@@ -156,6 +156,7 @@ class AuthService {
       code,
       type,
       expiresAt: expiresAt,
+      createdAt: new Date(),
       isUsed: false
     });
 
