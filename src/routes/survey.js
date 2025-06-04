@@ -7,7 +7,8 @@ import {
   updateSurveyDraft,
   deleteSurveyDraft,
   submitSurvey,
-  getSubmittedSurvey
+  getSubmittedSurvey,
+  submitSurveyDraft
 } from '../controllers/survey.js';
 
 const router = new Router();
@@ -20,6 +21,7 @@ router.get('/draft', getSurveyDraft);
 router.post('/draft', saveSurveyDraft);
 router.put('/draft', updateSurveyDraft);
 router.delete('/draft', deleteSurveyDraft);
+router.post('/draft/submit', submitSurveyDraft);
 
 // 问卷提交相关  
 router.post('/submit', submitSurvey);

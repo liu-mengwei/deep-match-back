@@ -1,4 +1,4 @@
-import * as surveyService from '../src/services/survey.js';
+import * as surveyService from '../services/survey.js';
 
 // 获取当前用户的问卷草稿  
 export const getSurveyDraft = async (ctx) => {
@@ -14,6 +14,7 @@ export const getSurveyDraft = async (ctx) => {
         weights: draft.weights,
         createdAt: draft.createdAt,
         updatedAt: draft.updatedAt,
+        status: draft.status
       };
     } else {
       ctx.body = null;
@@ -135,5 +136,29 @@ export const getSubmittedSurvey = async (ctx) => {
   } catch (error) {
     ctx.status = 500;
     ctx.body = { error: '获取已提交问卷失败', details: error.message };
+  }
+};
+
+// 新增：提交草稿（仅更改状态，不计算结果）
+export const submitSurveyDraft = async (ctx) => {
+  try {
+    const userId = ctx.state.user.id;
+    const draft = await surveyService.submitDraft(userId);
+    if (!draft) {
+      ctx.status = 404;
+      ctx.body = { error: '草稿不存在或已提交' };
+      return;
+    }
+    ctx.body = {
+      success: true,
+      draft: {
+        id: draft.id,
+        status: draft.status,
+        updatedAt: draft.updatedAt
+      }
+    };
+  } catch (error) {
+    ctx.status = 500;
+    ctx.body = { error: '提交草稿失败', details: error.message };
   }
 };
