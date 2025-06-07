@@ -86,34 +86,6 @@ export const deleteSurveyDraft = async (ctx) => {
   }
 };
 
-// 提交问卷  
-export const submitSurvey = async (ctx) => {
-  try {
-    const userId = ctx.state.user.id;
-    const { basicInfo, weights, basicFilter } = ctx.request.body;
-
-    // 参数验证  
-    if (!basicInfo || Object.keys(basicInfo).length === 0) {
-      ctx.status = 400;
-      ctx.body = { error: '问卷答案不能为空' };
-      return;
-    }
-
-    const { survey, results } = await surveyService.submitSurvey(userId, basicInfo, weights, basicFilter);
-
-    ctx.body = {
-      success: true,
-      survey: {
-        id: survey.id,
-        results
-      }
-    };
-  } catch (error) {
-    ctx.status = 500;
-    ctx.body = { error: '提交问卷失败', details: error.message };
-  }
-};
-
 // 获取已提交的问卷  
 export const getSubmittedSurvey = async (ctx) => {
   try {
@@ -160,5 +132,40 @@ export const submitSurveyDraft = async (ctx) => {
   } catch (error) {
     ctx.status = 500;
     ctx.body = { error: '提交草稿失败', details: error.message };
+  }
+};
+
+// 更新问卷草稿状态
+export const updateSurveyDraftStatus = async (ctx) => {
+  try {
+    const userId = ctx.state.user.id;
+    const { status } = ctx.request.body;
+    
+    // 验证状态参数
+    if (!status || !['draft', 'submitted'].includes(status)) {
+      ctx.status = 400;
+      ctx.body = { error: '无效的状态参数，必须为 draft 或 submitted' };
+      return;
+    }
+    
+    const draft = await surveyService.updateDraftStatus(userId, status);
+    
+    if (!draft) {
+      ctx.status = 404;
+      ctx.body = { error: '草稿不存在' };
+      return;
+    }
+    
+    ctx.body = {
+      success: true,
+      draft: {
+        id: draft.id,
+        status: draft.status,
+        updatedAt: draft.updatedAt
+      }
+    };
+  } catch (error) {
+    ctx.status = 500;
+    ctx.body = { error: '更新草稿状态失败', details: error.message };
   }
 };

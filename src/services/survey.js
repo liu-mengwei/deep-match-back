@@ -97,88 +97,24 @@ export const deleteDraft = async (userId) => {
   }
 };
 
-// 提交问卷
-export const submitSurvey = async (
-  userId,
-  basicInfo,
-  weights,
-  basicFilter = null
-) => {
-  const transaction = await sequelize.transaction();
-
-  try {
-    // 查找现有草稿
-    let survey = await Survey.findOne({
-      where: {
-        userId: userId,
-        status: "draft",
-      },
-      transaction,
-    });
-
-    // 计算结果
-    const results = await calculateResults(userId, basicInfo, weights);
-
-    // 如果有草稿就更新，没有就创建新记录
-    if (survey) {
-      // 更新现有记录
-      await survey.update(
-        {
-          basicInfo,
-          weights,
-          basicFilter,
-          results,
-          status: "submitted",
-        },
-        { transaction }
-      );
-    } else {
-      // 没有草稿的情况下创建新记录
-      survey = await Survey.create(
-        {
-          userId,
-          basicInfo,
-          weights,
-          basicFilter,
-          results,
-          status: "submitted",
-        },
-        { transaction }
-      );
-    }
-
-    // 更新用户的问卷提交状态
-    await User.update(
-      { hasSubmittedSurvey: true },
-      {
-        where: { id: userId },
-        transaction,
-      }
-    );
-
-    await transaction.commit();
-    return { survey, results };
-  } catch (error) {
-    await transaction.rollback();
-    throw error;
-  }
-};
-
-// 新增：仅更改草稿状态为 submitted
-export const submitDraft = async (userId) => {
+// 修改：更新问卷草稿状态
+export const updateDraftStatus = async (userId, status) => {
   const transaction = await sequelize.transaction();
   try {
-    const draft = await Survey.findOne({
-      where: { userId, status: "draft" },
+    const survey = await Survey.findOne({
+      where: { userId },
       transaction,
     });
-    if (!draft) {
+    
+    if (!survey) {
       await transaction.rollback();
       return null;
     }
-    await draft.update({ status: "submitted" }, { transaction });
+    
+    await survey.update({ status }, { transaction });
+    
     await transaction.commit();
-    return draft;
+    return survey;
   } catch (error) {
     await transaction.rollback();
     throw error;
